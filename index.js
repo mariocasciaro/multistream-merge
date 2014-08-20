@@ -28,6 +28,8 @@ module.exports = function mergeStreams() {
   
   var mergeStream = through({objectMode:  options.objectMode});
   
+  mergeStream.setMaxListeners(0);
+
   Array.prototype.forEach.call(args, function(stream) {
     stream.pipe(mergeStream, {end: false});
     stream.once('end', function() {

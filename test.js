@@ -83,4 +83,22 @@ describe('multistream-merge', function() {
         done();
       });
   });
+
+
+  it('should handle more than 10 streams', function() {
+    function createStream() {
+      var stream = new ReadableStream({objectMode: true});
+      stream._read = function() {
+        this.push(null);
+        this._read = function(){};
+      };
+      return stream;
+    }
+    var streams = [];
+    for (var i = 0; i < 11; i++) {
+      streams.push(createStream());
+    }
+    var merged = multistreamMerge.obj(streams);
+    expect(merged._events.unpipe.warned).to.be.undefined;
+  });
 });
